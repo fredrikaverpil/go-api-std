@@ -17,5 +17,7 @@ func main() {
 
 	// Create a new server
 	server := api.NewServer(*listenAddr, &store)
+	println("Server running on port", *listenAddr)
+
 	log.Fatal(server.Run())
 }
