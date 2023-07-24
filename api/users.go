@@ -29,6 +29,7 @@ func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(user)
 	} else {
+		// POST, UPDATE, PATCH, DELETE...
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
