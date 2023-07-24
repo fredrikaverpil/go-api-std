@@ -1,0 +1,5 @@
+# Root
+GET http://0.0.0.0:8080/
+
+# Get user with id 1
+GET http://0.0.0.0:8080/users/1
