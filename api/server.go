@@ -24,6 +24,6 @@ func (s *Server) ListenAddr() string {
 
 func (s *Server) Run() error {
 	http.HandleFunc("/", s.defaultHandler)
-	http.HandleFunc("/users/", s.handleGetUser)
+	http.HandleFunc("/users/", s.Users)
 	return http.ListenAndServe(s.listenAddr, nil)
 }

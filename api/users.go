@@ -6,8 +6,44 @@ import (
 	"strconv"
 )
 
-func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
+type CreateUserPayload struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
+	// TODO: use JSON:API spec for JSON error responses
+
 	switch r.Method {
+
+	case http.MethodPost:
+
+		var payload CreateUserPayload
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		if err != nil {
+			http.Error(w, "Failed to parse JSON payload", http.StatusBadRequest)
+			return
+		}
+		if payload.Username == "" || payload.Password == "" {
+			http.Error(w, "Username and password are required", http.StatusBadRequest)
+			return
+		}
+
+		user, err := s.store.GetUserByUsername(payload.Username)
+		if err == nil && user.Username == payload.Username {
+			http.Error(w, "Username is already taken", http.StatusConflict)
+			return
+		}
+
+		user, error := s.store.CreateUser(payload.Username, payload.Password)
+		if error != nil {
+			http.Error(w, error.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(user)
+
 	case http.MethodGet:
 
 		if len(r.URL.Path) <= len("/users/") {
