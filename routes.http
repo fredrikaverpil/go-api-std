@@ -1,5 +1,17 @@
-# Root
+# To manually test these, run the server with the dummy store
+
+# Root/catchall
 GET http://0.0.0.0:8080/
 
-# Get user with id 1
+# Users
 GET http://0.0.0.0:8080/users/1
+
+# Users - bad requests
+GET http://0.0.0.0:8080/users
+GET http://0.0.0.0:8080/users/
+GET http://0.0.0.0:8080/users/0
+GET http://0.0.0.0:8080/users/yolo
+GET http://0.0.0.0:8080/users/9999999999999999999
+POST http://0.0.0.0:8080/users
+POST http://0.0.0.0:8080/users/0
+POST http://0.0.0.0:8080/users/1

@@ -10,26 +10,65 @@ import (
 	"github.com/fredrikaverpil/go-api-std/stores"
 )
 
-func TestUserAPI(t *testing.T) {
+func TestGetUserByIdOk(t *testing.T) {
+	expectedJsonBody := `{"id":1, "first_name":"John"}`
+
 	store := stores.DummyStore{}
 	server := NewServer(":8080", &store)
-
 	url := "/users/1"
-
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	rr := httptest.NewRecorder()
 
 	server.handleGetUser(rr, req)
 
-	if rr.Code != http.StatusOK {
-		t.Errorf("got %v want %v", rr.Code, http.StatusOK)
-	}
-
-	expectedJsonBody := `{"id":1, "first_name":"John"}`
-
+	assert.Exactly(t, rr.Code, http.StatusOK)
 	assert.JSONEq(t, expectedJsonBody, rr.Body.String())
+}
+
+func TestGetUsersNotSupported(t *testing.T) {
+	store := stores.DummyStore{}
+	server := NewServer(":8080", &store)
+	url := "/users/"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+
+	server.handleGetUser(rr, req)
+
+	assert.Exactly(t, rr.Code, http.StatusBadRequest)
+}
+
+func TestUsersNoSlash(t *testing.T) {
+	store := stores.DummyStore{}
+	server := NewServer(":8080", &store)
+	url := "/users"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+
+	server.handleGetUser(rr, req)
+
+	assert.Exactly(t, rr.Code, http.StatusBadRequest)
+}
+
+func TestNonExistingUser(t *testing.T) {
+	store := stores.DummyStore{}
+	server := NewServer(":8080", &store)
+	url := "/users/0"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+
+	server.handleGetUser(rr, req)
+
+	assert.Exactly(t, rr.Code, http.StatusNotFound)
 }

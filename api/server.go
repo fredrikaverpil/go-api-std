@@ -23,7 +23,7 @@ func (s *Server) ListenAddr() string {
 }
 
 func (s *Server) Run() error {
-	http.HandleFunc("/", s.handleRoot)
+	http.HandleFunc("/", s.defaultHandler)
 	http.HandleFunc("/users/", s.handleGetUser)
 	return http.ListenAndServe(s.listenAddr, nil)
 }
