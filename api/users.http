@@ -1,8 +1,3 @@
-# To manually test these, run the server with the dummy store
-
-# Root/catchall
-GET http://0.0.0.0:8080/
-
 # Create user
 POST http://0.0.0.0:8080/users/
 Content-Type: application/json

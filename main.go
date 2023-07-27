@@ -13,7 +13,12 @@ func main() {
 	listenAddr := flag.String("listenaddr", ":8080", "server listen address")
 	flag.Parse()
 
-	store := stores.DummyStore{}
+	// store := stores.DummyStore{}
+
+	store, err := stores.NewPostgresStore()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create a new server
 	server := api.NewServer(*listenAddr, &store)

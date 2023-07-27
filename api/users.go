@@ -18,6 +18,10 @@ func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPost:
 
+		if len(r.URL.Path) > len("/users/") {
+			http.Error(w, "Bad request", http.StatusBadRequest)
+		}
+
 		var payload CreateUserPayload
 		err := json.NewDecoder(r.Body).Decode(&payload)
 		if err != nil {
@@ -56,13 +60,13 @@ func (s *Server) Users(w http.ResponseWriter, r *http.Request) {
 
 		int64NumOfDigits := 19
 		if len(userIdStr) >= int64NumOfDigits {
-			http.Error(w, "Bad request", http.StatusBadRequest)
+			http.Error(w, "Bad request: too many digits", http.StatusBadRequest)
 			return
 		}
 
 		userId, err := strconv.Atoi(userIdStr)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "Bad request: not an integer", http.StatusBadRequest)
 			return
 		}
 
