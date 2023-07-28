@@ -54,52 +54,38 @@ func (s *PostgresStore) CreateUser(username string, password string) (models.Use
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	rows, err := s.db.QueryContext(ctx, query, username, hashedPassword)
+	// TODO: excessive use of transaction, only here to demonstrate.
+	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return models.User{}, err
-	}
-	defer rows.Close()
-
-	var user models.User
-	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Username)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	if err := rows.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	return user, nil
-}
-
-func (s *PostgresStore) GetUserByUsername(username string) (models.User, error) {
-	query := `
-  SELECT id, username
-  FROM users
-  WHERE username = $1
-  `
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	rows, err := s.db.QueryContext(ctx, query, username)
+	rows, err := tx.QueryContext(ctx, query, username, hashedPassword)
 	if err != nil {
-		return models.User{}, err
+		tx.Rollback()
+		log.Fatal(err)
+		return models.User{}, errors.New("could not create user")
 	}
+
 	defer rows.Close()
 
 	var user models.User
+
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Username)
-		if err != nil {
+		if err := rows.Scan(&user.ID, &user.Username); err != nil {
+			tx.Rollback()
 			log.Fatal(err)
+			return models.User{}, errors.New("could not create user")
 		}
 	}
 	if err := rows.Err(); err != nil {
+		tx.Rollback()
 		log.Fatal(err)
+		return models.User{}, errors.New("could not create user")
+
 	}
+
+	tx.Commit()
 	return user, nil
 }
 
@@ -114,6 +100,35 @@ func (s *PostgresStore) GetUser(id int) (models.User, error) {
 	defer cancel()
 
 	rows, err := s.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return models.User{}, err
+	}
+	defer rows.Close()
+
+	var user models.User
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.Username)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return user, nil
+}
+
+func (s *PostgresStore) GetUserByUsername(username string) (models.User, error) {
+	query := `
+  SELECT id, username
+  FROM users
+  WHERE username = $1
+  `
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := s.db.QueryContext(ctx, query, username)
 	if err != nil {
 		return models.User{}, err
 	}

@@ -3,27 +3,33 @@ package api
 import (
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/fredrikaverpil/go-api-std/stores"
 )
 
 type Server struct {
 	listenAddr string
 	store      stores.Store
+	router     *mux.Router
 }
 
 func NewServer(listenAddr string, store stores.Store) *Server {
-	return &Server{
+	server := Server{
 		listenAddr: listenAddr,
 		store:      store,
 	}
-}
 
-func (s *Server) ListenAddr() string {
-	return s.listenAddr
+	server.router = mux.NewRouter()
+	server.router.HandleFunc("/", server.DefaultHandler)
+
+	usersRouter := server.router.PathPrefix("/users").Subrouter()
+	usersRouter.Methods(http.MethodPost).Path("").HandlerFunc(server.CreateUser)
+	usersRouter.Methods(http.MethodGet).Path("/{id}").HandlerFunc(server.GetUser)
+
+	return &server
 }
 
 func (s *Server) Run() error {
-	http.HandleFunc("/", s.defaultHandler)
-	http.HandleFunc("/users", s.Users)
-	return http.ListenAndServe(s.listenAddr, nil)
+	return http.ListenAndServe(s.listenAddr, s.router)
 }

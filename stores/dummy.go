@@ -15,12 +15,17 @@ type DummyDbRecord struct {
 	HashedPassword string
 }
 
-var userDb = make(map[int]DummyDbRecord)
+type DummyStore struct {
+	userDb map[int]DummyDbRecord
+}
 
-type DummyStore struct{}
+func NewDummyStore() DummyStore {
+	userDb := make(map[int]DummyDbRecord)
+	return DummyStore{userDb: userDb}
+}
 
 func (s *DummyStore) CreateUser(username string, password string) (models.User, error) {
-	nextID := len(userDb) + 1
+	nextID := len(s.userDb) + 1
 	hashedPassword, err := lib.HashPassword(password)
 	if err != nil {
 		return models.User{}, errors.New("could not hash password")
@@ -33,13 +38,13 @@ func (s *DummyStore) CreateUser(username string, password string) (models.User, 
 	}
 
 	userRecord := DummyDbRecord{ID: nextID, Username: username, HashedPassword: hashedPassword}
-	userDb[nextID] = userRecord
+	s.userDb[nextID] = userRecord
 
 	return user, nil
 }
 
 func (s *DummyStore) GetUserByUsername(username string) (models.User, error) {
-	for userId, dbRecord := range userDb {
+	for userId, dbRecord := range s.userDb {
 		if dbRecord.Username == username {
 			user, err := s.GetUser(userId)
 			if err != nil {
@@ -53,7 +58,7 @@ func (s *DummyStore) GetUserByUsername(username string) (models.User, error) {
 }
 
 func (s *DummyStore) GetUser(id int) (models.User, error) {
-	userRecord, exists := userDb[id]
+	userRecord, exists := s.userDb[id]
 	if !exists {
 		return models.User{}, errors.New("no user found")
 	}

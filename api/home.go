@@ -1,7 +1,9 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (s *Server) defaultHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) DefaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello, worldz!"))
 }

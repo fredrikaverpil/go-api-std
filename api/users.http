@@ -1,5 +1,5 @@
 # Create user
-POST http://0.0.0.0:8080/users/
+POST http://0.0.0.0:8080/users
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 GET http://0.0.0.0:8080/users/1
 
 
-# Users - bad requests
+# Invalid routes
 GET http://0.0.0.0:8080/users
 GET http://0.0.0.0:8080/users/
 GET http://0.0.0.0:8080/users/0
