@@ -60,7 +60,7 @@ func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userId <= 0 {
-		http.Error(w, "Bad request: not a positive integer", http.StatusBadRequest)
+		http.Error(w, "Not found: record must have ID >= 1", http.StatusNotFound)
 		return
 	}
 
