@@ -4,8 +4,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/fredrikaverpil/go-api-std/api"
-	"github.com/fredrikaverpil/go-api-std/stores"
+	"github.com/fredrikaverpil/go-api-std/pkgs/api"
+	"github.com/fredrikaverpil/go-api-std/pkgs/stores"
 )
 
 func main() {

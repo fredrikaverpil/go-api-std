@@ -1,6 +1,6 @@
 package stores
 
-import "github.com/fredrikaverpil/go-api-std/models"
+import "github.com/fredrikaverpil/go-api-std/pkgs/models"
 
 type Store interface {
 	CreateUser(username string, password string) (models.User, error)
