@@ -6,6 +6,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
+	"github.com/fredrikaverpil/go-api-std/pkgs/lib"
+	"github.com/fredrikaverpil/go-api-std/pkgs/services"
 )
 
 type CreateUserPayload struct {
@@ -27,15 +30,17 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := s.store.GetUserByUsername(payload.Username)
-	if err == nil && user.Username == payload.Username {
-		http.Error(w, "Username is already taken", http.StatusConflict)
-		return
-	}
-
-	user, error := s.store.CreateUser(payload.Username, payload.Password)
-	if error != nil {
-		http.Error(w, error.Error(), http.StatusInternalServerError)
+	user, err := services.CreateUser(s.store, payload.Username, payload.Password)
+	if err != nil {
+		ierr := err.(*lib.CustomError)
+		switch ierr.Code {
+		case lib.ErrNotFound:
+			http.Error(w, ierr.Message, http.StatusNotFound)
+		case lib.ErrConflict:
+			http.Error(w, ierr.Message, http.StatusConflict)
+		default:
+			http.Error(w, ierr.Message, http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -44,6 +49,7 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
+	// TODO: move logic into service
 	vars := mux.Vars(r)
 	userIdStr := vars["id"]
 

@@ -1,27 +1,40 @@
 package lib
 
+import (
+	"fmt"
+)
+
 type ErrorCode int
 
 const (
 	ErrInternal     ErrorCode = iota
 	ErrNotFound     ErrorCode = iota
+	ErrConflict     ErrorCode = iota
 	ErrInvalidInput ErrorCode = iota
 	// Add more error codes here
 )
 
-type internalError struct {
+type CustomError struct {
 	Code    ErrorCode
 	Message string
 }
 
-func InternalError(message string) *internalError {
-	return &internalError{Code: ErrInternal, Message: message}
+func (e *CustomError) Error() string {
+	return fmt.Sprintf("%d: %s", e.Code, e.Message)
 }
 
-func NotFoundError(message string) *internalError {
-	return &internalError{Code: ErrNotFound, Message: message}
+func InternalError(message string) error {
+	return &CustomError{Code: ErrInternal, Message: message}
 }
 
-func InvalidInputError(message string) *internalError {
-	return &internalError{Code: ErrInvalidInput, Message: message}
+func NotFoundError(message string) error {
+	return &CustomError{Code: ErrNotFound, Message: message}
+}
+
+func ConflictError(message string) error {
+	return &CustomError{Code: ErrConflict, Message: message}
+}
+
+func InvalidInputError(message string) error {
+	return &CustomError{Code: ErrInvalidInput, Message: message}
 }
