@@ -14,3 +14,4 @@ WIP:
 - Simple CRUD.
 - Error responses follows JSON:API spec.
 - JWT tokens.
+- Use structure from https://github.com/golang-standards/project-layout
