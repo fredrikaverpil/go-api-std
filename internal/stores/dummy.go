@@ -3,8 +3,8 @@
 package stores
 
 import (
-	"github.com/fredrikaverpil/go-api-std/pkg/lib"
-	"github.com/fredrikaverpil/go-api-std/pkg/models"
+	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/models"
 )
 
 type DummyDbRecord struct {

@@ -9,8 +9,8 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/fredrikaverpil/go-api-std/pkg/lib"
-	"github.com/fredrikaverpil/go-api-std/pkg/models"
+	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/models"
 )
 
 type PostgresStore struct {

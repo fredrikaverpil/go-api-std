@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/fredrikaverpil/go-api-std/pkg/lib"
-	"github.com/fredrikaverpil/go-api-std/pkg/services"
+	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/services"
 )
 
 type CreateUserPayload struct {

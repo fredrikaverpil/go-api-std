@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/fredrikaverpil/go-api-std/pkg/stores"
+	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
 type Server struct {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/fredrikaverpil/go-api-std/pkg/stores"
+	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
 func TestCreateUserOk(t *testing.T) {
