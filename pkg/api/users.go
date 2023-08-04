@@ -49,7 +49,6 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-	// TODO: move logic into service
 	vars := mux.Vars(r)
 	userIdStr := vars["id"]
 
@@ -65,21 +64,18 @@ func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userId <= 0 {
-		http.Error(w, "Not found: record must have ID >= 1", http.StatusNotFound)
-		return
-	}
-
-	user, err := s.store.GetUser(userId)
+	user, err := services.GetUser(s.store, userId)
+	// TODO: do not allow getting the user unless the user id is part of the JWT
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
-
-	validationErr := user.Validate()
-	if validationErr != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		ierr := err.(*lib.CustomError)
+		switch ierr.Code {
+		case lib.ErrNotFound:
+			http.Error(w, ierr.Message, http.StatusNotFound)
+			return
+		default:
+			http.Error(w, ierr.Message, http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")

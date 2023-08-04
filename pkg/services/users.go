@@ -30,3 +30,17 @@ func CreateUser(store stores.Store, username string, password string) (models.Us
 
 	return user, nil
 }
+
+func GetUser(store stores.Store, id int) (models.User, error) {
+	if id <= 0 {
+		m := "Not found: record must have id >= 1"
+		return models.User{}, lib.NotFoundError(m)
+	}
+
+	user, err := store.GetUser(id)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
