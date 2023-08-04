@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/fredrikaverpil/go-api-std/pkgs/lib"
-	"github.com/fredrikaverpil/go-api-std/pkgs/models"
-	"github.com/fredrikaverpil/go-api-std/pkgs/stores"
+	"github.com/fredrikaverpil/go-api-std/pkg/lib"
+	"github.com/fredrikaverpil/go-api-std/pkg/models"
+	"github.com/fredrikaverpil/go-api-std/pkg/stores"
 )
 
 func CreateUser(store stores.Store, username string, password string) (models.User, error) {

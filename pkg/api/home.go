@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/fredrikaverpil/go-api-std/pkgs/services"
+	"github.com/fredrikaverpil/go-api-std/pkg/services"
 )
 
 func (s *Server) DefaultHandler(w http.ResponseWriter, r *http.Request) {
