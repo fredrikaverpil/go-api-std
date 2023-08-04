@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/fredrikaverpil/go-api-std/internal/api"
+	"github.com/fredrikaverpil/go-api-std/internal/rest"
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server := api.NewServer(*listenAddr, &store)
+	server := rest.NewServer(*listenAddr, &store)
 	println("Server running on port", *listenAddr)
 
 	log.Fatal(server.Run())

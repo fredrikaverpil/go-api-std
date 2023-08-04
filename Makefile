@@ -30,6 +30,6 @@ test:
 	@go test -v -cover ./...
 
 server:
-	@go run cmd/server/server.go
+	@go run cmd/server-rest/server-rest.go
 
 .PHONY: dbup dbdown dropdb createdb psql migrateup migratedown test server
