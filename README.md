@@ -29,7 +29,7 @@ Go APIs using as much of the standard library as possible.
 - Error responses follows JSON:API spec.
 - JWT tokens.
 - Take some inspiration from
-  - https://github.com/golang-standards/project-layot
+  - https://github.com/golang-standards/project-layout
   - https://github.com/araujo88/golang-rest-api-template
 - gRPC server.
 - gRPC API gateway.
