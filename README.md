@@ -16,8 +16,8 @@ Go APIs using as much of the standard library as possible.
   - domain, models and stores
     - services
       - rest
-- Custom errors are defined in the domain layer and can be used throughout the layers (but not useful in the rest layer). Each custom domain error has an internal code which you map to a desired http status code.
-- In the rest layer, the custom domain errors are translated into http errors (using an error-to-status mapper).
+- [Custom errors](internal/domain/error.go) are defined in the domain layer and can be used throughout the layers (but not useful in the rest layer).
+- In the rest layer, the custom domain errors are translated into http errors (using an [error-to-status mapper](internal/rest/error_resp_mapper.go)).
   - When using this mapper, you must define the http status codes you are willing to have your route return, so to prevent the endpoint to start returning new error codes unexpectedly, following e.g. domain logic refactorings. Could also potentially make it easier to keep endpoint docs in sync with the code.
 - Ultimately, you should be able to tell from each rest server method which possible http status codes can be returned.
 
