@@ -6,9 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUserOk(t *testing.T) {
@@ -107,7 +106,7 @@ func TestGetUserByIdOk(t *testing.T) {
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, 200)
+	assert.Exactly(t, rr.Code, http.StatusOK)
 	assert.JSONEq(t, expectedJsonBody, rr.Body.String())
 }
 
