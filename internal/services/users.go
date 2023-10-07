@@ -9,16 +9,14 @@ import (
 func CreateUser(store stores.Store, username string, password string) (models.User, error) {
 	preExistingUser, err := store.GetUserByUsername(username)
 	if err != nil {
-		ierr := err.(*domain.Error)
-		switch ierr.Code {
-		case domain.ErrNotFound:
+		if e, ok := err.(*domain.Error); ok && e.Code == domain.ErrNotFound {
 			// expected, username should not exist here, or it is already taken
-			break
-		default:
+		} else {
 			// any other error is an actual problem
 			return models.User{}, err
 		}
 	}
+
 	if preExistingUser.ID != 0 {
 		return models.User{}, domain.ConflictError("username already exists")
 	}
