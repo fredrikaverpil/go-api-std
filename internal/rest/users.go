@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -15,21 +14,14 @@ type CreateUserPayload struct {
 	Password string `json:"password"`
 }
 
-func validatePayload(payload *CreateUserPayload) error {
-	if payload.Username == "" || payload.Password == "" {
-		return errors.New("username and password are required")
-	}
-	return nil
-}
-
 func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var payload CreateUserPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Failed to parse JSON payload", http.StatusBadRequest)
 		return
 	}
-	if err := validatePayload(&payload); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if payload.Username == "" || payload.Password == "" {
+		http.Error(w, "Username and password are required", http.StatusBadRequest)
 		return
 	}
 
