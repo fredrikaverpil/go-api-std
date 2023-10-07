@@ -9,13 +9,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type CreateUserPayload struct {
+type createUserPayload struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var payload CreateUserPayload
+	var payload createUserPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Failed to parse JSON payload", http.StatusBadRequest)
 		return
