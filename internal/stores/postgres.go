@@ -7,10 +7,9 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
-
-	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/domain"
 	"github.com/fredrikaverpil/go-api-std/internal/models"
+	_ "github.com/lib/pq"
 )
 
 type PostgresStore struct {
@@ -40,7 +39,7 @@ func NewPostgresStore() (PostgresStore, error) {
 }
 
 func (s *PostgresStore) CreateUser(username string, password string) (models.User, error) {
-	hashedPassword, err := lib.HashPassword(password)
+	hashedPassword, err := domain.HashPassword(password)
 	if err != nil {
 		return models.User{}, errors.New("could not hash password")
 	}
@@ -64,7 +63,7 @@ func (s *PostgresStore) CreateUser(username string, password string) (models.Use
 	if err != nil {
 		tx.Rollback()
 		log.Fatal(err)
-		return models.User{}, lib.InternalError("could not create user")
+		return models.User{}, domain.InternalError("could not create user")
 	}
 
 	defer rows.Close()
@@ -75,13 +74,13 @@ func (s *PostgresStore) CreateUser(username string, password string) (models.Use
 		if err := rows.Scan(&user.ID, &user.Username); err != nil {
 			tx.Rollback()
 			log.Fatal(err)
-			return models.User{}, lib.InternalError("could not create user")
+			return models.User{}, domain.InternalError("could not create user")
 		}
 	}
 	if err := rows.Err(); err != nil {
 		tx.Rollback()
 		log.Fatal(err)
-		return models.User{}, lib.InternalError("could not create user")
+		return models.User{}, domain.InternalError("could not create user")
 
 	}
 

@@ -3,7 +3,7 @@
 package stores
 
 import (
-	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/domain"
 	"github.com/fredrikaverpil/go-api-std/internal/models"
 )
 
@@ -24,15 +24,15 @@ func NewDummyStore() DummyStore {
 
 func (s *DummyStore) CreateUser(username string, password string) (models.User, error) {
 	nextID := len(s.userDb) + 1
-	hashedPassword, err := lib.HashPassword(password)
+	hashedPassword, err := domain.HashPassword(password)
 	if err != nil {
-		return models.User{}, lib.InternalError("could not hash password")
+		return models.User{}, domain.InternalError("could not hash password")
 	}
 
 	user := models.User{ID: nextID, Username: username}
 	err = user.Validate()
 	if err != nil {
-		return models.User{}, lib.InternalError("could not validate user")
+		return models.User{}, domain.InternalError("could not validate user")
 	}
 
 	userRecord := DummyDbRecord{ID: nextID, Username: username, HashedPassword: hashedPassword}
@@ -46,25 +46,25 @@ func (s *DummyStore) GetUserByUsername(username string) (models.User, error) {
 		if dbRecord.Username == username {
 			user, err := s.GetUser(userId)
 			if err != nil {
-				return models.User{}, lib.ConflictError("username already exists")
+				return models.User{}, domain.ConflictError("username already exists")
 			}
 			return user, nil
 		}
 	}
 
-	return models.User{}, lib.NotFoundError("no user found")
+	return models.User{}, domain.NotFoundError("no user found")
 }
 
 func (s *DummyStore) GetUser(id int) (models.User, error) {
 	userRecord, exists := s.userDb[id]
 	if !exists {
-		return models.User{}, lib.NotFoundError("no user found")
+		return models.User{}, domain.NotFoundError("no user found")
 	}
 
 	user := models.User{ID: userRecord.ID, Username: userRecord.Username}
 	err := user.Validate()
 	if err != nil {
-		return models.User{}, lib.InternalError("could not validate user")
+		return models.User{}, domain.InternalError("could not validate user")
 	}
 
 	return user, nil

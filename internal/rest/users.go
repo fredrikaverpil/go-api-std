@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
-
-	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/domain"
 	"github.com/fredrikaverpil/go-api-std/internal/services"
+	"github.com/gorilla/mux"
 )
 
 type CreateUserPayload struct {
@@ -32,11 +31,11 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := services.CreateUser(s.store, payload.Username, payload.Password)
 	if err != nil {
-		ierr := err.(*lib.CustomError)
+		ierr := err.(*domain.Error)
 		switch ierr.Code {
-		case lib.ErrNotFound:
+		case domain.ErrNotFound:
 			http.Error(w, ierr.Message, http.StatusNotFound)
-		case lib.ErrConflict:
+		case domain.ErrConflict:
 			http.Error(w, ierr.Message, http.StatusConflict)
 		default:
 			http.Error(w, ierr.Message, http.StatusInternalServerError)
@@ -67,9 +66,9 @@ func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	user, err := services.GetUser(s.store, userId)
 	// TODO: do not allow getting the user unless the user id is part of the JWT
 	if err != nil {
-		ierr := err.(*lib.CustomError)
+		ierr := err.(*domain.Error)
 		switch ierr.Code {
-		case lib.ErrNotFound:
+		case domain.ErrNotFound:
 			http.Error(w, ierr.Message, http.StatusNotFound)
 			return
 		default:

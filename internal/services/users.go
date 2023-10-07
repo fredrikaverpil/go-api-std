@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/fredrikaverpil/go-api-std/internal/lib"
+	"github.com/fredrikaverpil/go-api-std/internal/domain"
 	"github.com/fredrikaverpil/go-api-std/internal/models"
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
@@ -9,9 +9,9 @@ import (
 func CreateUser(store stores.Store, username string, password string) (models.User, error) {
 	preExistingUser, err := store.GetUserByUsername(username)
 	if err != nil {
-		ierr := err.(*lib.CustomError)
+		ierr := err.(*domain.Error)
 		switch ierr.Code {
-		case lib.ErrNotFound:
+		case domain.ErrNotFound:
 			// expected, username should not exist here, or it is already taken
 			break
 		default:
@@ -20,7 +20,7 @@ func CreateUser(store stores.Store, username string, password string) (models.Us
 		}
 	}
 	if preExistingUser.ID != 0 {
-		return models.User{}, lib.ConflictError("username already exists")
+		return models.User{}, domain.ConflictError("username already exists")
 	}
 
 	user, error := store.CreateUser(username, password)
@@ -34,7 +34,7 @@ func CreateUser(store stores.Store, username string, password string) (models.Us
 func GetUser(store stores.Store, id int) (models.User, error) {
 	if id <= 0 {
 		m := "Not found: record must have id >= 1"
-		return models.User{}, lib.NotFoundError(m)
+		return models.User{}, domain.NotFoundError(m)
 	}
 
 	user, err := store.GetUser(id)
