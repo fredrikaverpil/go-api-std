@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fredrikaverpil/go-api-std/internal/services"
 	"github.com/gorilla/mux"
 )
 
@@ -25,7 +24,7 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := services.CreateUser(s.store, payload.Username, payload.Password)
+	user, err := s.userService.CreateUser(payload.Username, payload.Password)
 	if err != nil {
 		validHTTPStatuses := []int{http.StatusNotFound, http.StatusConflict}
 		mapErrorToRESTResponse(err, validHTTPStatuses, w)
@@ -54,7 +53,7 @@ func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := services.GetUser(s.store, userId)
+	user, err := s.userService.GetUser(userId)
 	// TODO: do not allow getting the user unless the user id is part of the JWT
 	if err != nil {
 		validHTTPStatuses := []int{http.StatusNotFound}

@@ -3,21 +3,20 @@ package rest
 import (
 	"net/http"
 
+	"github.com/fredrikaverpil/go-api-std/internal/services"
 	"github.com/gorilla/mux"
-
-	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
 type Server struct {
-	listenAddr string
-	store      stores.Store
-	router     *mux.Router
+	listenAddr  string
+	router      *mux.Router
+	userService services.UserService
 }
 
-func NewServer(listenAddr string, store stores.Store) *Server {
+func NewServer(listenAddr string, userService services.UserService) *Server {
 	server := Server{
-		listenAddr: listenAddr,
-		store:      store,
+		listenAddr:  listenAddr,
+		userService: userService,
 	}
 
 	server.router = mux.NewRouter()

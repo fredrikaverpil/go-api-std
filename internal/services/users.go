@@ -6,8 +6,19 @@ import (
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
-func CreateUser(store stores.Store, username string, password string) (models.User, error) {
-	preExistingUser, err := store.GetUserByUsername(username)
+type UserService struct {
+	store stores.Store
+}
+
+func NewService(store stores.Store) *UserService {
+	service := UserService{
+		store: store,
+	}
+	return &service
+}
+
+func (s *UserService) CreateUser(username string, password string) (models.User, error) {
+	preExistingUser, err := s.store.GetUserByUsername(username)
 	if err != nil {
 		if e, ok := err.(*domain.Error); ok && e.Code == domain.ErrNotFound {
 			// expected, username should not exist here, or it is already taken
@@ -21,7 +32,7 @@ func CreateUser(store stores.Store, username string, password string) (models.Us
 		return models.User{}, domain.ConflictError("username already exists")
 	}
 
-	user, error := store.CreateUser(username, password)
+	user, error := s.store.CreateUser(username, password)
 	if error != nil {
 		return models.User{}, err
 	}
@@ -29,13 +40,13 @@ func CreateUser(store stores.Store, username string, password string) (models.Us
 	return user, nil
 }
 
-func GetUser(store stores.Store, id int) (models.User, error) {
+func (s *UserService) GetUser(id int) (models.User, error) {
 	if id <= 0 {
 		m := "Not found: record must have id >= 1"
 		return models.User{}, domain.NotFoundError(m)
 	}
 
-	user, err := store.GetUser(id)
+	user, err := s.store.GetUser(id)
 	if err != nil {
 		return models.User{}, err
 	}
