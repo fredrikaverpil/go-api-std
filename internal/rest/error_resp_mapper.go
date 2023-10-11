@@ -10,7 +10,10 @@ import (
 // Map custom domain errors (and regular errors) to REST responses
 func mapErrorToRESTResponse(err error, validHTTPStatuses []int, w http.ResponseWriter) {
 	// To avoid leaking undesired errors, the caller to this function must provide a list of valid HTTP status codes.
-	// If the error code is not in the list, then a generic 500 Internal Server Error is returned.
+	// If the error code is not in the list, then a generic 500 Internal Server Error is returned, without revealing
+	// the error message.
+	//
+	// So, in short, use regular errors (errors.New()) for errors that should never reach the client.
 	//
 	// The reasoning behind this is that each endpoint usually needs to add documentation on which possible
 	// HTTP status codes it can return. By forcing the caller to provide a list of valid HTTP status codes,
@@ -22,6 +25,7 @@ func mapErrorToRESTResponse(err error, validHTTPStatuses []int, w http.ResponseW
 	// provided in the request body.
 
 	codeToHTTPStatus := map[domain.ErrorCode]int{
+		domain.ErrInternal:        http.StatusInternalServerError,
 		domain.ErrNotFound:        http.StatusNotFound,
 		domain.ErrConflict:        http.StatusConflict,
 		domain.ErrInvalidArgument: http.StatusBadRequest,
