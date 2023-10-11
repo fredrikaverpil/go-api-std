@@ -17,9 +17,9 @@ type DummyStore struct {
 	userDb map[int]DummyDbRecord
 }
 
-func NewDummyStore() DummyStore {
+func NewDummyStore() *DummyStore {
 	userDb := make(map[int]DummyDbRecord)
-	return DummyStore{userDb: userDb}
+	return &DummyStore{userDb: userDb}
 }
 
 func (s *DummyStore) CreateUser(username string, password string) (models.User, error) {

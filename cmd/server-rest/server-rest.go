@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 
 	server := rest.NewServer(*listenAddr, *userService)
 	println("Server running on port", *listenAddr)

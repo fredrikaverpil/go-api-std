@@ -15,7 +15,7 @@ func TestCreateUserOk(t *testing.T) {
 	expectedJsonBody := `{"id":1, "username":"john"}`
 
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"john", "password":"secret"}`)
@@ -33,7 +33,7 @@ func TestCreateUserOk(t *testing.T) {
 
 func TestCreateUserNoUsername(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	body := bytes.NewBufferString(`{"password":"secret"}`)
@@ -50,7 +50,7 @@ func TestCreateUserNoUsername(t *testing.T) {
 
 func TestCreateUserNoPassword(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"john"}`)
@@ -67,7 +67,7 @@ func TestCreateUserNoPassword(t *testing.T) {
 
 func TestCreateUserUsernameTaken(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"foo", "password":"secret"}`)
@@ -101,7 +101,7 @@ func TestGetUserByIdOk(t *testing.T) {
 	user, _ := store.CreateUser("john", "secret")
 	assert.Exactly(t, user.ID, 1)
 
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users/1"
 	req, err := http.NewRequest("GET", url, nil)
@@ -118,7 +118,7 @@ func TestGetUserByIdOk(t *testing.T) {
 
 func TestGetUsersNotSupported(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users/"
 	req, err := http.NewRequest("GET", url, nil)
@@ -134,7 +134,7 @@ func TestGetUsersNotSupported(t *testing.T) {
 
 func TestUsersNoSlash(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	req, err := http.NewRequest("GET", url, nil)
@@ -150,7 +150,7 @@ func TestUsersNoSlash(t *testing.T) {
 
 func TestNonExistingUser(t *testing.T) {
 	store := stores.NewDummyStore()
-	userService := services.NewService(&store)
+	userService := services.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users/0"
 	req, err := http.NewRequest("GET", url, nil)

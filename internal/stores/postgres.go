@@ -16,12 +16,12 @@ type PostgresStore struct {
 	db *sql.DB
 }
 
-func NewPostgresStore() (PostgresStore, error) {
+func NewPostgresStore() (*PostgresStore, error) {
 	driver := "postgres"
 	dataSourceName := "postgres://root:secret@localhost:5432/test?sslmode=disable"
 	db, err := sql.Open(driver, dataSourceName)
 	if err != nil {
-		return PostgresStore{}, err
+		return &PostgresStore{}, err
 	}
 
 	db.SetMaxOpenConns(5)
@@ -32,10 +32,10 @@ func NewPostgresStore() (PostgresStore, error) {
 
 	err = db.PingContext(ctx)
 	if err != nil {
-		return PostgresStore{}, err
+		return &PostgresStore{}, err
 	}
 
-	return PostgresStore{db: db}, nil
+	return &PostgresStore{db: db}, nil
 }
 
 func (s *PostgresStore) CreateUser(username string, password string) (models.User, error) {
