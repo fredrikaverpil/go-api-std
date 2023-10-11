@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/fredrikaverpil/go-api-std/internal/rest"
-	"github.com/fredrikaverpil/go-api-std/internal/services"
+	"github.com/fredrikaverpil/go-api-std/internal/services/user"
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
 )
 
@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userService := services.NewService(store)
+	userService := user.NewService(store)
 
 	server := rest.NewServer(*listenAddr, *userService)
 	println("Server running on port", *listenAddr)
