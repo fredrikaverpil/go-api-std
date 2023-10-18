@@ -2,6 +2,8 @@
 
 Go APIs using as much of the standard library as possible.
 
+Please note this is project is a playground for me while learning Go. 😄
+
 ## Quickstart
 
 Start Docker Desktop, or similar. Then run...
