@@ -22,6 +22,7 @@ type createUserPayload struct {
 // @Param        payload   body  createUserPayload  true  "User payload"
 // @Success      200  {object}  models.User
 // @Failure      400  {string}  string  "Bad Request"
+// @Failure      404  {string}  string  "Not Found"
 // @Failure      409  {string}  string  "Conflict"
 // @Failure      500  {string}  string  "Internal Server Error"
 // @Router       /users [post]
