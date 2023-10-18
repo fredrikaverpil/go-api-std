@@ -7,6 +7,13 @@ definitions:
       username:
         type: string
     type: object
+  rest.createUserPayload:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -23,6 +30,40 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: User payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/rest.createUserPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create user
+      tags:
+      - users
   /users/{id}:
     get:
       consumes:
@@ -55,7 +96,7 @@ paths:
             type: string
       summary: Get user data
       tags:
-      - accounts
+      - users
 securityDefinitions:
   BasicAuth:
     type: basic

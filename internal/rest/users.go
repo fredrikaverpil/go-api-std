@@ -13,6 +13,18 @@ type createUserPayload struct {
 	Password string `json:"password"`
 }
 
+// CreateUser godoc
+// @Summary      Create user
+// @Description  Create user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        payload   body  createUserPayload  true  "User payload"
+// @Success      200  {object}  models.User
+// @Failure      400  {string}  string  "Bad Request"
+// @Failure      409  {string}  string  "Conflict"
+// @Failure      500  {string}  string  "Internal Server Error"
+// @Router       /users [post]
 func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var payload createUserPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -40,7 +52,7 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // GetUser godoc
 // @Summary      Get user data
 // @Description  get user by ID
-// @Tags         accounts
+// @Tags         users
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
