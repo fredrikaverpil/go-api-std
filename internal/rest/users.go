@@ -37,6 +37,18 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetUser godoc
+// @Summary      Get user data
+// @Description  get user by ID
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      200  {object}  models.User
+// @Failure      404  {string}  string  "Not Found"
+// @Failure      400  {string}  string  "Bad Request"
+// @Failure      500  {string}  string  "Internal Server Error"
+// @Router       /users/{id} [get]
 func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userIdStr := vars["id"]
