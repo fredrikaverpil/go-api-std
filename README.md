@@ -2,6 +2,22 @@
 
 Go APIs using as much of the standard library as possible.
 
+## Quickstart
+
+Start Docker Desktop, or similar. Then run...
+
+```bash
+brew install golang-migrate
+
+make dbup
+make createdb
+make migrateup
+
+make swagger
+
+make server
+```
+
 ## Features
 
 - REST server.
@@ -9,6 +25,9 @@ Go APIs using as much of the standard library as possible.
 - Postgres store.
 - Migrations via golang-migrate.
 - Hashing of passwords.
+- Swagger
+  - Generate JSON/YAML via github.com/swaggo/swag
+  - Serve /docs via github.com/swaggo/http-swagger
 
 ## Architectural choices
 
@@ -35,3 +54,9 @@ Go APIs using as much of the standard library as possible.
 - gRPC API gateway.
 - Protobuf (Google AIPs).
 - GraphQL server.
+
+## Error handling
+
+- In API route functions, pass any error through the error-to-response mapper so to return a valid API error response.
+- In service functions, wrap any errors with a suitable domain error and return them to the API route functions.
+- In any other functions, just return regular, normal, errors.

@@ -32,4 +32,8 @@ test:
 server:
 	@go run cmd/server-rest/server-rest.go
 
-.PHONY: dbup dbdown dropdb createdb psql migrateup migratedown test server
+swagger:
+	@ swag init -g cmd/server-rest/server-rest.go --output static --packageName docs
+	  mv static/docs.go internal/docs/docs.go
+
+.PHONY: dbup dbdown dropdb createdb psql migrateup migratedown test server swagger
