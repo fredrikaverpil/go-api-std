@@ -39,6 +39,12 @@ migratedown:
 test:
 	@go test -v -cover ./...
 
+vet:
+	@go vet ./...
+
+build:
+	@go build -o bin/server-rest cmd/server-rest/server-rest.go
+
 server:
 	@go run cmd/server-rest/server-rest.go
 
