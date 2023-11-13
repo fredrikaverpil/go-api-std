@@ -28,7 +28,8 @@ func NewServer(listenAddr string, userService user.UserService) *Server {
 	server.router.HandleFunc("/", server.DefaultHandler)
 
 	// serve all static files at /static from the ./static folder
-	server.router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("./static")))
+	server.router.PathPrefix("/static/").Handler(staticHandler)
 
 	// swagger docs
 	docsRouter := server.router.PathPrefix("/docs").Subrouter()
