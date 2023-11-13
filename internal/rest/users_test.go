@@ -133,7 +133,7 @@ func TestGetUsersNotSupported(t *testing.T) {
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusNotFound)
+	assert.Exactly(t, rr.Code, http.StatusMethodNotAllowed)
 }
 
 func TestUsersNoSlash(t *testing.T) {
