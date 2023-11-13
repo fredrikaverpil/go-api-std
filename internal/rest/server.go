@@ -21,23 +21,27 @@ func NewServer(listenAddr string, userService user.UserService) *Server {
 		router:      mux.NewRouter(),
 	}
 
+	// middleware for all requests
 	server.router.Use(LogMiddleware)
 
+	// catch-all
 	server.router.HandleFunc("/", server.DefaultHandler)
 
-	staticFilesRouter := server.router.PathPrefix("/static").Subrouter()
-	staticFilesRouter.PathPrefix("/").Handler(http.StripPrefix("/static", http.FileServer(http.Dir("./static"))))
+	// serve all static files at /static from the ./static folder
+	server.router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
+	// swagger docs
 	docsRouter := server.router.PathPrefix("/docs").Subrouter()
 	docsRouter.HandleFunc("", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/docs/index.html", http.StatusMovedPermanently)
 	})
 	docsRouter.PathPrefix("/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/static/swagger.json"),
+		httpSwagger.URL("/static/swagger.json"),
 	))
 
+	// users
 	usersRouter := server.router.PathPrefix("/users").Subrouter()
-	usersRouter.Methods(http.MethodPost).Path("").HandlerFunc(server.CreateUser)
+	usersRouter.Methods(http.MethodPost).HandlerFunc(server.CreateUser)
 	usersRouter.Methods(http.MethodGet).Path("/{id}").HandlerFunc(server.GetUser)
 
 	return &server
