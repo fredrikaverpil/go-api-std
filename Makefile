@@ -42,6 +42,9 @@ test:
 vet:
 	@go vet ./...
 
+lint:
+	@go run github.com/golangci/golangci-lint/cmd/golangci-lint@latest run --verbose .
+
 build:
 	@go build -o bin/server-rest cmd/server-rest/server-rest.go
 

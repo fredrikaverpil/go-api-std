@@ -1,0 +1,40 @@
+name: go
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up
+        uses: actions/setup-go@v4
+        with:
+          check-latest: true
+
+      - run: make test
+
+  vet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up
+        uses: actions/setup-go@v4
+        with:
+          check-latest: true
+
+      - run: make vet
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up
+        uses: actions/setup-go@v4
+        with:
+          check-latest: true
+
+      - run: make lint
