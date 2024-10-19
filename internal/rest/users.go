@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 type createUserPayload struct {
@@ -63,8 +61,7 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {string}  string  "Internal Server Error"
 // @Router       /users/{id} [get]
 func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	userIdStr := vars["id"]
+	userIdStr := r.PathValue("id")
 
 	int64NumOfDigits := 19
 	if len(userIdStr) >= int64NumOfDigits {
@@ -83,6 +80,7 @@ func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		validHTTPStatuses := []int{http.StatusNotFound}
 		mapErrorToRESTResponse(err, validHTTPStatuses, w)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

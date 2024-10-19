@@ -120,7 +120,7 @@ func TestGetUserByIdOk(t *testing.T) {
 	assert.JSONEq(t, expectedJsonBody, rr.Body.String())
 }
 
-func TestGetUsersNotSupported(t *testing.T) {
+func TestGetUsersWithSlash(t *testing.T) {
 	store := stores.NewDummyStore()
 	userService := user.NewService(store)
 	server := NewServer(":8080", *userService)
@@ -133,7 +133,7 @@ func TestGetUsersNotSupported(t *testing.T) {
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusMethodNotAllowed)
+	assert.Exactly(t, http.StatusOK, rr.Code)
 }
 
 func TestUsersNoSlash(t *testing.T) {
@@ -149,7 +149,7 @@ func TestUsersNoSlash(t *testing.T) {
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusMethodNotAllowed)
+	assert.Exactly(t, http.StatusOK, rr.Code)
 }
 
 func TestNonExistingUser(t *testing.T) {
