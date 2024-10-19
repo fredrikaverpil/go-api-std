@@ -4,19 +4,20 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/fredrikaverpil/go-api-std/internal/services/user"
 	"github.com/fredrikaverpil/go-api-std/internal/stores"
-	"github.com/stretchr/testify/assert"
+	"gotest.tools/v3/assert"
 )
 
 func TestX(t *testing.T) {
-	assert.True(t, true)
+	assert.Assert(t, true)
 }
 
 func TestCreateUserOk(t *testing.T) {
-	expectedJsonBody := `{"id":1, "username":"john"}`
+	expectedJsonBody := `{"id":1,"username":"john"}`
 
 	store := stores.NewDummyStore()
 	userService := user.NewService(store)
@@ -24,15 +25,14 @@ func TestCreateUserOk(t *testing.T) {
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"john", "password":"secret"}`)
 	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusCreated)
-	assert.JSONEq(t, expectedJsonBody, rr.Body.String())
+	assert.Equal(t, rr.Code, http.StatusCreated)
+	assert.Equal(t, strings.TrimSpace(rr.Body.String()), strings.TrimSpace(expectedJsonBody))
 }
 
 func TestCreateUserNoUsername(t *testing.T) {
@@ -42,14 +42,13 @@ func TestCreateUserNoUsername(t *testing.T) {
 	url := "/users"
 	body := bytes.NewBufferString(`{"password":"secret"}`)
 	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusBadRequest)
+	assert.Equal(t, rr.Code, http.StatusBadRequest)
 }
 
 func TestCreateUserNoPassword(t *testing.T) {
@@ -59,14 +58,13 @@ func TestCreateUserNoPassword(t *testing.T) {
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"john"}`)
 	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusBadRequest)
+	assert.Equal(t, rr.Code, http.StatusBadRequest)
 }
 
 func TestCreateUserUsernameTaken(t *testing.T) {
@@ -76,48 +74,46 @@ func TestCreateUserUsernameTaken(t *testing.T) {
 	url := "/users"
 	body := bytes.NewBufferString(`{"username":"foo", "password":"secret"}`)
 	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusCreated)
+	assert.Equal(t, rr.Code, http.StatusCreated)
 
 	// User 2, with the same username
 	body = bytes.NewBufferString(`{"username":"foo", "password":"secret"}`)
 	req, err = http.NewRequest("POST", url, body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr = httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusConflict)
+	assert.Equal(t, rr.Code, http.StatusConflict)
 }
 
 func TestGetUserByIdOk(t *testing.T) {
-	expectedJsonBody := `{"id":1, "username":"john"}`
+	expectedJsonBody := `{"id":1,"username":"john"}`
 
 	store := stores.NewDummyStore()
-	user_, _ := store.CreateUser("john", "secret")
-	assert.Exactly(t, user_.ID, 1)
+	user_, err := store.CreateUser("john", "secret")
+	assert.NilError(t, err)
+	assert.Equal(t, user_.ID, 1)
 
 	userService := user.NewService(store)
 	server := NewServer(":8080", *userService)
 	url := "/users/1"
 	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusOK)
-	assert.JSONEq(t, expectedJsonBody, rr.Body.String())
+	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, strings.TrimSpace(rr.Body.String()), strings.TrimSpace(expectedJsonBody))
 }
 
 func TestGetUsersWithSlash(t *testing.T) {
@@ -126,14 +122,13 @@ func TestGetUsersWithSlash(t *testing.T) {
 	server := NewServer(":8080", *userService)
 	url := "/users/"
 	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, http.StatusOK, rr.Code)
+	assert.Equal(t, rr.Code, http.StatusOK)
 }
 
 func TestUsersNoSlash(t *testing.T) {
@@ -142,14 +137,13 @@ func TestUsersNoSlash(t *testing.T) {
 	server := NewServer(":8080", *userService)
 	url := "/users"
 	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, http.StatusOK, rr.Code)
+	assert.Equal(t, rr.Code, http.StatusOK)
 }
 
 func TestNonExistingUser(t *testing.T) {
@@ -158,12 +152,11 @@ func TestNonExistingUser(t *testing.T) {
 	server := NewServer(":8080", *userService)
 	url := "/users/0"
 	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NilError(t, err)
+
 	rr := httptest.NewRecorder()
 
 	server.router.ServeHTTP(rr, req)
 
-	assert.Exactly(t, rr.Code, http.StatusNotFound)
+	assert.Equal(t, rr.Code, http.StatusNotFound)
 }
