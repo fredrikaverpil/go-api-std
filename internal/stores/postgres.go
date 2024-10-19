@@ -38,7 +38,7 @@ func NewPostgresStore() (*PostgresStore, error) {
 	return &PostgresStore{db: db}, nil
 }
 
-func (s *PostgresStore) CreateUser(username string, password string) (models.User, error) {
+func (s *PostgresStore) CreateUser(username, password string) (models.User, error) {
 	hashedPassword, err := domain.HashPassword(password)
 	if err != nil {
 		return models.User{}, errors.New("could not hash password")
@@ -61,7 +61,7 @@ func (s *PostgresStore) CreateUser(username string, password string) (models.Use
 
 	rows, err := tx.QueryContext(ctx, query, username, hashedPassword)
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		log.Fatal(err)
 		return models.User{}, domain.InternalError("could not create user")
 	}
@@ -72,19 +72,22 @@ func (s *PostgresStore) CreateUser(username string, password string) (models.Use
 
 	for rows.Next() {
 		if err := rows.Scan(&user.ID, &user.Username); err != nil {
-			tx.Rollback()
+			_ = tx.Rollback()
 			log.Fatal(err)
 			return models.User{}, domain.InternalError("could not create user")
 		}
 	}
 	if err := rows.Err(); err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		log.Fatal(err)
 		return models.User{}, domain.InternalError("could not create user")
 
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		log.Fatal(err)
+		return models.User{}, domain.InternalError("could not create user")
+	}
 	return user, nil
 }
 
