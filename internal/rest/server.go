@@ -23,7 +23,7 @@ func NewServer(listenAddr string, userService user.UserService) *Server {
 	// Add middleware for every request
 	server.mux.Use(LogMiddleware)
 
-	// Default handler
+	// Default handler ({$} prevents / from becoming a catch-all handler).
 	server.mux.HandleFunc("/{$}", server.DefaultHandler)
 
 	// serve all static files at /static from the ./static folder
