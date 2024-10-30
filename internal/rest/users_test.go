@@ -29,7 +29,7 @@ func TestCreateUserOk(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusCreated)
 	assert.Equal(t, strings.TrimSpace(rr.Body.String()), strings.TrimSpace(expectedJsonBody))
@@ -46,7 +46,7 @@ func TestCreateUserNoUsername(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusBadRequest)
 }
@@ -62,7 +62,7 @@ func TestCreateUserNoPassword(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusBadRequest)
 }
@@ -78,7 +78,7 @@ func TestCreateUserUsernameTaken(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusCreated)
 
@@ -89,7 +89,7 @@ func TestCreateUserUsernameTaken(t *testing.T) {
 
 	rr = httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusConflict)
 }
@@ -110,7 +110,7 @@ func TestGetUserByIdOk(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusOK)
 	assert.Equal(t, strings.TrimSpace(rr.Body.String()), strings.TrimSpace(expectedJsonBody))
@@ -126,7 +126,7 @@ func TestGetUsersWithSlash(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusOK)
 }
@@ -141,7 +141,7 @@ func TestUsersNoSlash(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusOK)
 }
@@ -156,7 +156,7 @@ func TestNonExistingUser(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	server.router.ServeHTTP(rr, req)
+	server.mux.ServeHTTP(rr, req)
 
 	assert.Equal(t, rr.Code, http.StatusNotFound)
 }
