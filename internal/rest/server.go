@@ -24,7 +24,7 @@ func NewServer(listenAddr string, userService user.UserService) *Server {
 	server.mux.Use(LogMiddleware)
 
 	// Default handler
-	server.mux.HandleFunc("/", server.DefaultHandler)
+	server.mux.HandleFunc("/{$}", server.DefaultHandler)
 
 	// serve all static files at /static from the ./static folder
 	staticFolderHandler := http.FileServer(http.Dir("./static"))

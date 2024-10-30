@@ -128,7 +128,7 @@ func TestGetUsersWithSlash(t *testing.T) {
 
 	server.mux.ServeHTTP(rr, req)
 
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, rr.Code, http.StatusNotFound)
 }
 
 func TestUsersNoSlash(t *testing.T) {
@@ -143,7 +143,7 @@ func TestUsersNoSlash(t *testing.T) {
 
 	server.mux.ServeHTTP(rr, req)
 
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, rr.Code, http.StatusMethodNotAllowed)
 }
 
 func TestNonExistingUser(t *testing.T) {
